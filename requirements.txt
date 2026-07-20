@@ -1,0 +1,33 @@
+# Core
+python-dotenv==1.0.1
+numpy==1.26.4
+
+# Retrieval / embeddings (production path)
+sentence-transformers==3.0.1
+faiss-cpu==1.8.0             # default vector backend
+chromadb==0.5.5             # optional vector backend (VECTOR_BACKEND=chroma)
+scikit-learn==1.5.1          # TF-IDF fallback + metrics
+
+# Agent orchestration
+langgraph==0.2.28
+langchain-core==0.3.9
+
+# LLM clients — openai covers Groq/OpenAI/Azure; anthropic covers Claude
+openai==1.51.0
+anthropic==0.39.0
+
+# Serving
+fastapi==0.115.0
+uvicorn==0.30.6
+streamlit==1.38.0
+pydantic==2.9.2
+python-multipart==0.0.9      # file uploads (audio transcription endpoint)
+
+# MCP server
+mcp==1.1.2
+
+# PDF ingestion (optional, for dropping your own docs in data/)
+pypdf==5.0.1
+
+# http version 2 client (optional, for Groq API)
+httpx==0.27.2
