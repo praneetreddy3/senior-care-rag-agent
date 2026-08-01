@@ -1,0 +1,102 @@
+[
+  {
+    "question": "What age must someone be to enroll in PACE?",
+    "expected_source": "pace_eligibility_enrollment.md",
+    "answer_keywords": ["55"]
+  },
+  {
+    "question": "Who is eligible for PACE?",
+    "expected_source": "pace_eligibility_enrollment.md",
+    "answer_keywords": ["55", "nursing home", "service area"]
+  },
+  {
+    "question": "What is the interdisciplinary team in PACE?",
+    "expected_source": "pace_program_overview.md",
+    "answer_keywords": ["team", "care plan", "assessment"]
+  },
+  {
+    "question": "What does PACE stand for?",
+    "expected_source": "pace_program_overview.md",
+    "answer_keywords": ["all-inclusive", "elderly"]
+  },
+  {
+    "question": "What is medication reconciliation?",
+    "expected_source": "medication_management.md",
+    "answer_keywords": ["list", "medications", "transition"]
+  },
+  {
+    "question": "How can I prevent falls at home for an older adult?",
+    "expected_source": "fall_prevention.md",
+    "answer_keywords": ["grab bars", "lighting", "rugs"]
+  },
+  {
+    "question": "What is respite care and who does it help?",
+    "expected_source": "caregiver_support.md",
+    "answer_keywords": ["caregiver", "break"]
+  },
+  {
+    "question": "What are the parts of Medicare?",
+    "expected_source": "medicare_medicaid_basics.md",
+    "answer_keywords": ["Part A", "Part B", "Part D"]
+  },
+  {
+    "question": "What happens during a transition of care after a hospital stay?",
+    "expected_source": "care_coordination_workflow.md",
+    "answer_keywords": ["medication reconciliation", "follow-up", "discharge"]
+  },
+  {
+    "question": "Who are dual eligibles?",
+    "expected_source": "medicare_medicaid_basics.md",
+    "answer_keywords": ["Medicare", "Medicaid"]
+  },
+  {
+    "question": "What does deprescribing mean?",
+    "expected_source": "medication_management.md",
+    "answer_keywords": ["reduction", "stopping", "supervision"]
+  },
+  {
+    "question": "What are signs of caregiver strain?",
+    "expected_source": "caregiver_support.md",
+    "answer_keywords": ["exhaustion", "depression", "sleep"]
+  },
+  {
+    "question": "What services does PACE cover?",
+    "expected_source": "pace_program_overview.md",
+    "answer_keywords": ["services", "transportation"]
+  },
+  {
+    "question": "How much does PACE cost for someone with both Medicare and Medicaid?",
+    "expected_source": "pace_eligibility_enrollment.md",
+    "answer_keywords": ["nothing"]
+  },
+  {
+    "question": "Can someone leave PACE if they want to?",
+    "expected_source": "pace_eligibility_enrollment.md",
+    "answer_keywords": ["voluntary", "disenroll"]
+  },
+  {
+    "question": "What does Medicare Part A cover?",
+    "expected_source": "medicare_medicaid_basics.md",
+    "answer_keywords": ["hospital", "inpatient"]
+  },
+  {
+    "question": "What is Medicaid?",
+    "expected_source": "medicare_medicaid_basics.md",
+    "answer_keywords": ["state", "income"]
+  },
+  {
+    "question": "Why are care transitions risky for older adults?",
+    "expected_source": "care_coordination_workflow.md",
+    "answer_keywords": ["hospital", "discharge"]
+  },
+  {
+    "question": "What is polypharmacy?",
+    "expected_source": "medication_management.md",
+    "answer_keywords": ["multiple", "medications"]
+  },
+  {
+    "question": "What are common fall risk factors?",
+    "expected_source": "fall_prevention.md",
+    "answer_keywords": ["balance", "vision"]
+  }
+]
