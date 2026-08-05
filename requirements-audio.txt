@@ -1,0 +1,6 @@
+# Optional audio extras — server-side speech-to-text + sample-audio generation.
+# Not needed for the core app or the browser's live-mic voice input.
+# Install with:  pip install -r requirements-audio.txt
+
+faster-whisper==1.2.1        # open-source Whisper (server-side transcription)
+gTTS==2.5.3                  # generate the sample audio test files (needs internet)
