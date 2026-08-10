@@ -1,10 +1,8 @@
 # 🩺 Senior Care RAG Agent
 
-![CI](https://github.com/USERNAME/senior-care-rag-agent/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/praneetreddy3/senior-care-rag-agent/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-
-> Replace `USERNAME` in the badge URL above after you push.
 
 An **agentic retrieval-augmented generation (RAG)** assistant that answers questions
 from a senior-care operations knowledge base (PACE eligibility, Medicare/Medicaid,
