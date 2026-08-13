@@ -39,15 +39,16 @@ _SMALLTALK = re.compile(
 SMALLTALK_SYSTEM = (
     "You are a warm, friendly senior-care assistant. Reply to the user's greeting or "
     "small talk in one or two short, kind sentences, then gently invite them to ask "
-    "about senior-care topics (PACE, Medicare/Medicaid, medication safety, fall "
-    "prevention, caregiver support). Be genuine; do not state facts you're unsure of."
+    "about PACE eligibility and enrollment, PACE regulations and licensure, quality "
+    "assurance, participant rights, or Medicare/Medicaid coverage. Be genuine; do not "
+    "state facts you're unsure of."
 )
 
 
 # Never treat something with a real topic/question in it as small talk.
 _TOPICAL = re.compile(
-    r"(pace|medicare|medicaid|eligib|enroll|fall|medication|caregiver|nursing|"
-    r"benefit|cost|cover|\?)",
+    r"(pace|medicare|medicaid|eligib|enroll|disenroll|licens|audit|quality|"
+    r"caregiver|nursing|benefit|cost|cover|regulat|right|rate|\?)",
     re.IGNORECASE,
 )
 
@@ -63,9 +64,9 @@ def smalltalk_reply(query: str) -> Optional[str]:
             return reply
     return (
         "Hello! I'm doing well, thank you for asking. 😊 I'm here to help with "
-        "questions about senior-care programs — things like PACE eligibility, "
-        "Medicare and Medicaid, medication safety, fall prevention, or caregiver "
-        "support. What would you like to know?"
+        "questions about PACE — things like eligibility and enrollment, regulations "
+        "and licensure, quality assurance, participant rights, or how it interacts "
+        "with Medicare and Medicaid. What would you like to know?"
     )
 
 
@@ -160,21 +161,46 @@ def make_nodes(retriever: Retriever):
         return {"docs": docs, "notes": state.get("notes", []) + [note], "retry": False}
 
     def grade(state: AgentState) -> AgentState:
-        """Keep only context passages that are actually relevant to the query."""
+        """Keep only context passages that are actually relevant to the query.
+
+        Grades all retrieved passages in a single LLM call (one prompt listing
+        every numbered passage, asking for a yes/no per number) instead of one
+        call per passage. Same judgment, far fewer requests — important for
+        free-tier per-minute rate limits, and just cheaper/faster in general.
+        """
         docs = state["docs"]
         relevant: List[dict] = []
-        if settings.llm_enabled:
-            for d in docs:
-                verdict = llm.generate(
-                    prompt=(
-                        f"Question: {state['query']}\n\nPassage:\n{d['text']}\n\n"
-                        "Is this passage relevant and useful for answering the "
-                        "question? Answer strictly 'yes' or 'no'."
-                    ),
-                    temperature=0.0,
-                )
-                if verdict and verdict.strip().lower().startswith("y"):
-                    relevant.append(d)
+        if settings.llm_enabled and docs:
+            # Truncate passages for the relevance check only — judging topical
+            # relevance needs far less text than actually answering from it, and
+            # this is the single biggest token cost per question (up to 8 full
+            # chunks in one batched call on a self-correction retry). Cuts the
+            # grading call's token footprint by roughly 3x on free-tier limits.
+            grade_preview_chars = 500
+            listing = "\n\n".join(
+                f"[{i + 1}] {d['text'][:grade_preview_chars]}" for i, d in enumerate(docs)
+            )
+            verdict = llm.generate(
+                prompt=(
+                    f"Question: {state['query']}\n\nPassages:\n{listing}\n\n"
+                    "For EACH numbered passage, answer whether it is relevant and "
+                    "useful for answering the question. Reply with exactly one line "
+                    "per passage, in the form 'N: yes' or 'N: no' (N = passage "
+                    "number), nothing else."
+                ),
+                temperature=0.0,
+            )
+            yes_indices = set()
+            if verdict:
+                for line in verdict.strip().splitlines():
+                    line = line.strip()
+                    if ":" not in line:
+                        continue
+                    num_part, verdict_part = line.split(":", 1)
+                    num_part = "".join(ch for ch in num_part if ch.isdigit())
+                    if num_part and llm.parse_yes_no(verdict_part):
+                        yes_indices.add(int(num_part))
+            relevant = [d for i, d in enumerate(docs) if (i + 1) in yes_indices]
         else:
             relevant = [d for d in docs if _keyword_overlap(state["query"], d["text"]) > 0]
         found = len(relevant)  # how many were judged relevant BEFORE any fallback
@@ -221,7 +247,7 @@ def make_nodes(retriever: Retriever):
             ),
             temperature=0.0,
         )
-        grounded = bool(verdict and verdict.strip().lower().startswith("y"))
+        grounded = llm.parse_yes_no(verdict)
         attempts = state.get("attempts", 0)
         notes = state.get("notes", [])
         if grounded:

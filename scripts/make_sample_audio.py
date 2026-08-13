@@ -12,8 +12,8 @@ from gtts import gTTS
 
 QUESTIONS = {
     "q1_pace_eligibility": "Who is eligible for PACE?",
-    "q2_fall_prevention": "How can I prevent falls at home?",
-    "q3_medication": "What is medication reconciliation?",
+    "q2_pace_rights": "What rights does a PACE participant have?",
+    "q3_pace_medicare": "Is PACE the same as a Medicare Advantage plan?",
 }
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "tests", "audio")

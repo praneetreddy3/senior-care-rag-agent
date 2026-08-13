@@ -1,102 +1,272 @@
 [
   {
     "question": "What age must someone be to enroll in PACE?",
-    "expected_source": "pace_eligibility_enrollment.md",
+    "expected_source": "macpac_pace_stakeholder_interviews_2025.pdf",
     "answer_keywords": ["55"]
   },
   {
-    "question": "Who is eligible for PACE?",
-    "expected_source": "pace_eligibility_enrollment.md",
-    "answer_keywords": ["55", "nursing home", "service area"]
+    "question": "What percentage of PACE participants are dually enrolled in Medicare and Medicaid?",
+    "expected_source": "macpac_pace_stakeholder_interviews_2025.pdf",
+    "answer_keywords": ["84"]
   },
   {
-    "question": "What is the interdisciplinary team in PACE?",
-    "expected_source": "pace_program_overview.md",
-    "answer_keywords": ["team", "care plan", "assessment"]
+    "question": "What are the most common reasons for PACE disenrollment?",
+    "expected_source": "macpac_pace_stakeholder_interviews_2025.pdf",
+    "answer_keywords": ["death", "relocation"]
   },
   {
-    "question": "What does PACE stand for?",
-    "expected_source": "pace_program_overview.md",
-    "answer_keywords": ["all-inclusive", "elderly"]
+    "question": "How often does CMS audit PACE organizations?",
+    "expected_source": "macpac_pace_stakeholder_interviews_2025.pdf",
+    "answer_keywords": ["annual", "audits"]
   },
   {
-    "question": "What is medication reconciliation?",
-    "expected_source": "medication_management.md",
-    "answer_keywords": ["list", "medications", "transition"]
+    "question": "How does PACE monitor quality and satisfaction among participants?",
+    "expected_source": "macpac_pace_stakeholder_interviews_2025.pdf",
+    "answer_keywords": ["satisfaction", "surveys"]
   },
   {
-    "question": "How can I prevent falls at home for an older adult?",
-    "expected_source": "fall_prevention.md",
-    "answer_keywords": ["grab bars", "lighting", "rugs"]
+    "question": "Why is PACE quality difficult to measure according to stakeholders?",
+    "expected_source": "macpac_pace_stakeholder_interviews_2025.pdf",
+    "answer_keywords": ["quality", "standardization"]
   },
   {
-    "question": "What is respite care and who does it help?",
-    "expected_source": "caregiver_support.md",
-    "answer_keywords": ["caregiver", "break"]
+    "question": "How do most states set Medicaid PACE payment rates?",
+    "expected_source": "macpac_pace_stakeholder_interviews_2025.pdf",
+    "answer_keywords": ["actuaries", "AWOP"]
   },
   {
-    "question": "What are the parts of Medicare?",
-    "expected_source": "medicare_medicaid_basics.md",
-    "answer_keywords": ["Part A", "Part B", "Part D"]
+    "question": "How are states increasingly aligning PACE administration?",
+    "expected_source": "macpac_pace_stakeholder_interviews_2025.pdf",
+    "answer_keywords": ["managed care", "D-SNP"]
   },
   {
-    "question": "What happens during a transition of care after a hospital stay?",
-    "expected_source": "care_coordination_workflow.md",
-    "answer_keywords": ["medication reconciliation", "follow-up", "discharge"]
+    "question": "What concerns did consumer advocates raise about PACE enrollment practices?",
+    "expected_source": "macpac_pace_stakeholder_interviews_2025.pdf",
+    "answer_keywords": ["selectively", "eligibility"]
   },
   {
-    "question": "Who are dual eligibles?",
-    "expected_source": "medicare_medicaid_basics.md",
-    "answer_keywords": ["Medicare", "Medicaid"]
+    "question": "Where does most PACE enrollment come from, according to PACE organizations?",
+    "expected_source": "macpac_pace_stakeholder_interviews_2025.pdf",
+    "answer_keywords": ["word-of-mouth", "referrals"]
   },
   {
-    "question": "What does deprescribing mean?",
-    "expected_source": "medication_management.md",
-    "answer_keywords": ["reduction", "stopping", "supervision"]
+    "question": "What do states use to monitor PACE enrollee complaints and appeals?",
+    "expected_source": "macpac_pace_stakeholder_interviews_2025.pdf",
+    "answer_keywords": ["complaints", "grievances"]
   },
   {
-    "question": "What are signs of caregiver strain?",
-    "expected_source": "caregiver_support.md",
-    "answer_keywords": ["exhaustion", "depression", "sleep"]
+    "question": "Who was interviewed as part of the PACE stakeholder study?",
+    "expected_source": "macpac_pace_stakeholder_interviews_2025.pdf",
+    "answer_keywords": ["Medicaid officials", "consumer advocates"]
   },
   {
-    "question": "What services does PACE cover?",
-    "expected_source": "pace_program_overview.md",
-    "answer_keywords": ["services", "transportation"]
+    "question": "How much lower is the hospitalization rate for PACE members compared to other dually-eligible beneficiaries in Medicaid nursing homes?",
+    "expected_source": "ny_pace_expansion_options_2022.pdf",
+    "answer_keywords": ["24"]
   },
   {
-    "question": "How much does PACE cost for someone with both Medicare and Medicaid?",
-    "expected_source": "pace_eligibility_enrollment.md",
-    "answer_keywords": ["nothing"]
+    "question": "What percentage of PACE members live in the community instead of a nursing home?",
+    "expected_source": "ny_pace_expansion_options_2022.pdf",
+    "answer_keywords": ["95"]
   },
   {
-    "question": "Can someone leave PACE if they want to?",
-    "expected_source": "pace_eligibility_enrollment.md",
-    "answer_keywords": ["voluntary", "disenroll"]
+    "question": "Where did the PACE model originate?",
+    "expected_source": "ny_pace_expansion_options_2022.pdf",
+    "answer_keywords": ["On Lok", "California"]
   },
   {
-    "question": "What does Medicare Part A cover?",
-    "expected_source": "medicare_medicaid_basics.md",
-    "answer_keywords": ["hospital", "inpatient"]
+    "question": "How many states have elected to offer PACE services?",
+    "expected_source": "ny_pace_expansion_options_2022.pdf",
+    "answer_keywords": ["31"]
   },
   {
-    "question": "What is Medicaid?",
-    "expected_source": "medicare_medicaid_basics.md",
-    "answer_keywords": ["state", "income"]
+    "question": "What kind of care coordination does PACE provide beyond medical care?",
+    "expected_source": "ny_pace_expansion_options_2022.pdf",
+    "answer_keywords": ["transportation", "meals"]
   },
   {
-    "question": "Why are care transitions risky for older adults?",
-    "expected_source": "care_coordination_workflow.md",
-    "answer_keywords": ["hospital", "discharge"]
+    "question": "What legislation codified PACE licensure in New York State law?",
+    "expected_source": "ny_pace_expansion_options_2022.pdf",
+    "answer_keywords": ["S.8903", "A.9542"]
   },
   {
-    "question": "What is polypharmacy?",
-    "expected_source": "medication_management.md",
-    "answer_keywords": ["multiple", "medications"]
+    "question": "What is the Contracted D&TC Model option for PACE expansion in New York?",
+    "expected_source": "ny_pace_expansion_options_2022.pdf",
+    "answer_keywords": ["D&TC", "contract"]
   },
   {
-    "question": "What are common fall risk factors?",
-    "expected_source": "fall_prevention.md",
-    "answer_keywords": ["balance", "vision"]
+    "question": "What law places PACE Organizations under Article 44 licensure in New York?",
+    "expected_source": "ny_pace_expansion_options_2022.pdf",
+    "answer_keywords": ["Public Health Law"]
+  },
+  {
+    "question": "What is the Contracted Physician Practice Model for PACE expansion?",
+    "expected_source": "ny_pace_expansion_options_2022.pdf",
+    "answer_keywords": ["physician practice", "clinicians"]
+  },
+  {
+    "question": "What percentage of family members are satisfied with PACE support?",
+    "expected_source": "ny_pace_expansion_options_2022.pdf",
+    "answer_keywords": ["96"]
+  },
+  {
+    "question": "About how many members does New York currently enroll in PACE?",
+    "expected_source": "ny_pace_expansion_options_2022.pdf",
+    "answer_keywords": ["5,800"]
+  },
+  {
+    "question": "What reforms is New York undertaking to promote PACE expansion, such as direct enrollment?",
+    "expected_source": "ny_pace_expansion_options_2022.pdf",
+    "answer_keywords": ["direct enrollment"]
+  },
+  {
+    "question": "What law established PACE as a permanent Medicare program?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["Balanced Budget Act", "1997"]
+  },
+  {
+    "question": "What is the purpose of the Interdisciplinary Team (IDT) chapter in the PACE manual?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["Interdisciplinary Team", "care"]
+  },
+  {
+    "question": "What must a PACE organization establish to advise the governing body on participant concerns?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["participant advisory committee"]
+  },
+  {
+    "question": "Is PACE the same as a Medicare Advantage plan?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["not", "Medicare Advantage"]
+  },
+  {
+    "question": "What federal regulation implements the PACE statutory requirements?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["42 CFR", "460"]
+  },
+  {
+    "question": "What is a PACE organization required to have to protect participant rights?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["Bill of Rights"]
+  },
+  {
+    "question": "What does a PACE organization need to establish and maintain for enrollment tracking?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["marketing plan"]
+  },
+  {
+    "question": "Who is responsible for monitoring and auditing PACE organizations under the three-way agreement?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["CMS", "State"]
+  },
+  {
+    "question": "What is Chapter 7 of the PACE manual about?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["Service Delivery Settings", "PACE Center"]
+  },
+  {
+    "question": "What must a PACE organization do when it denies a service request?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["appeal", "writing"]
+  },
+  {
+    "question": "Who approves a PACE organization's QAPI (quality) plan before it's included in the program agreement?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["CMS", "State Administering Agency"]
+  },
+  {
+    "question": "What rights does a participant have regarding access to their own medical records?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["access", "records"]
+  },
+  {
+    "question": "What must a State Medicaid Agency submit to elect PACE as a state plan option?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["State Plan Amendment"]
+  },
+  {
+    "question": "What does CMS observe during on-site audits of PACE organizations?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["marketing", "enrollment"]
+  },
+  {
+    "question": "What are excluded services under the PACE program?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["excluded", "IDT"]
+  },
+  {
+    "question": "What is an Alternative Care Setting (ACS) in the PACE glossary?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["Alternative Care Setting", "facility"]
+  },
+  {
+    "question": "Who is responsible for documenting a PACE contractor's compliance with applicable standards?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["PACE organization", "contractor"]
+  },
+  {
+    "question": "How often must the IDT conduct a semi-annual in-person assessment of a participant?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["6 months"]
+  },
+  {
+    "question": "What do PACE progress notes document about a participant's care?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["care", "practitioners"]
+  },
+  {
+    "question": "Why does CMS expect PACE organizations to survey caregivers about satisfaction?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["caregivers", "satisfaction"]
+  },
+  {
+    "question": "What institutional settings are covered under PACE service delivery?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["hospitals", "rehabilitation"]
+  },
+  {
+    "question": "What does the PACE manual glossary say ACA stands for?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["Affordable Care Act"]
+  },
+  {
+    "question": "What must a PACE organization include when requesting a regulatory waiver?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["waiver", "rationale"]
+  },
+  {
+    "question": "What are the key topics covered in Chapter 1 of the PACE manual (Introduction to PACE)?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["Demonstration Project History", "Legislative History"]
+  },
+  {
+    "question": "What must a PACE organization's marketing plan include?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["marketing plan", "enrollment objectives"]
+  },
+  {
+    "question": "In the early history of PACE, what did the On Lok model help seniors do?",
+    "expected_source": "ny_pace_expansion_options_2022.pdf",
+    "answer_keywords": ["independently", "nursing home"]
+  },
+  {
+    "question": "What did federal officials say about the reasons behind voluntary PACE disenrollments?",
+    "expected_source": "macpac_pace_stakeholder_interviews_2025.pdf",
+    "answer_keywords": ["voluntary", "disenrollment"]
+  },
+  {
+    "question": "What kind of governance structure does Option 1 (Representative Governance) propose for PACE organizations in New York?",
+    "expected_source": "ny_pace_expansion_options_2022.pdf",
+    "answer_keywords": ["governance", "for-profit"]
+  },
+  {
+    "question": "What did one PACE provider say about how Medicare savings relate to Medicaid shortfalls?",
+    "expected_source": "macpac_pace_stakeholder_interviews_2025.pdf",
+    "answer_keywords": ["Medicare savings", "Medicaid"]
+  },
+  {
+    "question": "What must a PACE organization's Bill of Rights inform participants about upon enrollment?",
+    "expected_source": "cms_pace_manual.pdf",
+    "answer_keywords": ["rights", "responsibilities"]
   }
 ]

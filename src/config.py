@@ -61,6 +61,19 @@ class Settings:
     chunk_size: int = field(default_factory=lambda: _int("CHUNK_SIZE", 800))
     chunk_overlap: int = field(default_factory=lambda: _int("CHUNK_OVERLAP", 120))
 
+    # Regression-gate thresholds used by GET /eval-check (see eval/health_check.py).
+    # If a metric drops below its threshold, the endpoint reports pass=false so an
+    # automation tool (e.g. n8n) can alert on it.
+    eval_grounded_threshold: float = field(
+        default_factory=lambda: float(os.getenv("EVAL_GROUNDED_THRESHOLD", "0.8"))
+    )
+    eval_faithfulness_threshold: float = field(
+        default_factory=lambda: float(os.getenv("EVAL_FAITHFULNESS_THRESHOLD", "0.75"))
+    )
+    eval_hit_rate_threshold: float = field(
+        default_factory=lambda: float(os.getenv("EVAL_HIT_RATE_THRESHOLD", "0.6"))
+    )
+
     @property
     def llm_enabled(self) -> bool:
         return bool(self.llm_api_key)

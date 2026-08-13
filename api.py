@@ -17,6 +17,7 @@ from pydantic import BaseModel, Field
 
 from src.agent import Agent
 from src import transcribe as stt
+from eval.health_check import run_health_check
 
 app = FastAPI(
     title="Senior Care RAG Agent API",
@@ -102,6 +103,19 @@ def chat_stream(req: ChatRequest) -> StreamingResponse:
             yield f"data: {json.dumps(event)}\n\n"
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
+
+
+@app.get("/eval-check")
+def eval_check(sample_size: int = 8) -> dict:
+    """Run a fast sample of the eval set and report pass/fail against the
+    quality thresholds in `src/config.py` (EVAL_*_THRESHOLD env vars).
+
+    Built for automation tools (n8n, cron, CI) to poll on a schedule and alert
+    when retrieval/grounding/faithfulness regresses — a lightweight version of
+    the full `eval/run_eval.py` regression gate, fast enough to run repeatedly
+    against a rate-limited free-tier LLM API.
+    """
+    return run_health_check(get_agent(), sample_size=sample_size)
 
 
 @app.post("/transcribe")

@@ -1,21 +1,21 @@
 ---
 name: senior-care-kb-search
 description: >-
-  Search and answer questions from the senior-care operations knowledge base
-  (PACE eligibility, Medicare/Medicaid basics, care coordination, medication
-  safety, fall prevention, caregiver support). Use when a question can be
-  answered from organizational policy/operations documents and answers must be
-  grounded with citations.
+  Search and answer questions about the PACE program (eligibility and
+  enrollment, regulatory/licensure requirements, quality assurance, participant
+  rights, Medicare/Medicaid interaction) grounded in real CMS and state policy
+  documents. Use when a question can be answered from those source documents
+  and answers must be grounded with citations.
 ---
 
-# Senior Care Knowledge Base Skill
+# PACE Knowledge Base Skill
 
-This skill grounds answers in the organization's senior-care documents using an
-agentic RAG pipeline.
+This skill grounds answers in real PACE program policy/regulatory documents using
+an agentic RAG pipeline.
 
 ## When to use
 
-- A user asks an operational or policy question about senior-care programs.
+- A user asks a regulatory or policy question about the PACE program.
 - An answer must cite source documents rather than rely on model memory.
 
 ## How to use
@@ -40,5 +40,6 @@ inspect or re-rank the evidence yourself.
 ## Extending
 
 Drop new `.md`, `.txt`, or `.pdf` files into `data/` and run
-`python -m scripts.build_index` to re-index. No code changes needed to change
-domains.
+`python -m scripts.build_index` to re-index new documents — no code changes needed.
+Repointing the assistant at a genuinely different domain also means updating the
+system prompt and guardrails in `src/agent.py` (see `AGENTS.md`).

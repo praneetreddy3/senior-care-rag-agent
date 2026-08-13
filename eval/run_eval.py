@@ -18,12 +18,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import time
 from pathlib import Path
 from statistics import mean
 
 from src.agent import Agent
 from src.config import ROOT, settings
-from src.llm import generate
+from src.llm import generate, parse_yes_no
 
 EVAL_FILE = Path(__file__).parent / "eval_set.json"
 
@@ -34,7 +35,8 @@ def load_eval() -> list[dict]:
 
 def retrieval_metrics(agent: Agent, items: list[dict], k: int) -> dict:
     hits, rr = [], []
-    for item in items:
+    for i, item in enumerate(items, 1):
+        print(f"[retrieval {i}/{len(items)}] {item['question'][:70]}", flush=True)
         results = agent.retriever.retrieve(item["question"], top_k=k)
         sources = [c.source for c, _ in results]
         expected = item["expected_source"]
@@ -65,13 +67,16 @@ def faithfulness(question: str, answer: str, context: str) -> float | None:
         ),
         temperature=0.0,
     )
-    return 1.0 if verdict and verdict.strip().lower().startswith("y") else 0.0
+    return 1.0 if parse_yes_no(verdict) else 0.0
 
 
 def answer_metrics(agent: Agent, items: list[dict]) -> dict:
     coverage, faith, grounded = [], [], []
-    for item in items:
+    for i, item in enumerate(items, 1):
+        t0 = time.time()
+        print(f"[answer {i}/{len(items)}] {item['question'][:70]} ...", end="", flush=True)
         state = agent.run(item["question"])
+        print(f" done in {time.time() - t0:.1f}s", flush=True)
         answer = state.get("answer", "")
         coverage.append(keyword_coverage(answer, item.get("answer_keywords", [])))
         grounded.append(1.0 if state.get("grounded") else 0.0)
@@ -89,9 +94,16 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--k", type=int, default=settings.top_k)
     parser.add_argument("--json", type=str, default="")
+    parser.add_argument(
+        "--limit", type=int, default=0,
+        help="Run only the first N questions (0 = all). Useful for a quick "
+             "sanity check before committing to a long run (e.g. a local LLM).",
+    )
     args = parser.parse_args()
 
     items = load_eval()
+    if args.limit:
+        items = items[: args.limit]
     agent = Agent()
 
     r = retrieval_metrics(agent, items, args.k)

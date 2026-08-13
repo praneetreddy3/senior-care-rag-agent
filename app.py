@@ -42,9 +42,9 @@ with st.sidebar:
 
 examples = [
     "Who is eligible for PACE?",
-    "What is medication reconciliation and when should it happen?",
-    "How can I make a home safer to prevent falls?",
-    "What does the interdisciplinary team do?",
+    "Is PACE the same as a Medicare Advantage plan?",
+    "What does the interdisciplinary team (IDT) do?",
+    "How often does CMS audit PACE organizations?",
 ]
 
 st.write("**Try an example:**")

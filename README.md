@@ -5,18 +5,25 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 An **agentic retrieval-augmented generation (RAG)** assistant that answers questions
-from a senior-care operations knowledge base (PACE eligibility, Medicare/Medicaid,
-care coordination, medication safety, fall prevention, caregiver support). Every
-answer is **grounded in source documents** and shown with **citations**, and the
-agent **verifies its own answer** before returning it. It's a **multi-turn chatbot**
-with **streaming** responses, so follow-up questions work and answers appear as they
-generate.
+about the PACE program (Program of All-Inclusive Care for the Elderly) — eligibility
+and enrollment, regulatory and licensure requirements, quality assurance, participant
+rights, and how PACE interacts with Medicare and Medicaid — grounded in real CMS and
+state policy source documents. Every answer is **grounded in source documents** and
+shown with **citations**, and the agent **verifies its own answer** before returning
+it. It's a **multi-turn chatbot** with **streaming** responses, so follow-up
+questions work and answers appear as they generate.
 
-The knowledge base is **domain-swappable** — drop your own PDFs or markdown into
-`data/`, rebuild the index, and the same app serves a completely different domain.
+The knowledge base is **corpus-swappable**: retrieval, embeddings, and the vector
+store don't know anything about senior care — drop your own PDFs or markdown into
+`data/`, rebuild the index, and they'll index a new document set as-is. The one part
+that's tuned to this domain on purpose is `src/agent.py`'s system prompt and
+small-talk filter (e.g. "never give individualized medical/legal advice," topic
+keywords like "medicare"/"medicaid"), since a real deployment should have guardrails
+specific to what it's actually answering questions about. Repointing the whole app at
+a different domain means swapping the corpus **and** rewriting that prompt.
 
-> ⚠️ Demo project. The bundled corpus is general, publicly available program
-> information. It is **not** medical, legal, or benefits advice.
+> ⚠️ Demo project built on real public CMS/state PACE program documents (see
+> `data/`). It is **not** medical, legal, or benefits advice.
 
 ---
 
@@ -128,19 +135,34 @@ Two independent paths:
 python -m eval.run_eval --k 4 --json eval/results.json
 ```
 
-Measured on the 20-question eval set (`eval/eval_set.json`) with the LLM enabled:
+Measured on the 54-question eval set (`eval/eval_set.json`), written against the
+real CMS/state PACE documents in `data/` (a 191-page CMS regulatory manual, a
+20-slide MACPAC stakeholder-interview deck, and an 18-slide NY State Medicaid
+policy discussion):
 
-| Metric               | Score |
+| Metric               | Score (LLM-enabled) |
 |----------------------|-------|
-| Hit@4 (retrieval)    | 0.950 |
-| MRR                  | 0.783 |
-| Answer keyword cov.  | 0.983 |
-| Grounded rate (self-verification) | 1.000 |
-| Faithfulness (independent LLM judge) | 0.950 |
+| Hit@4 (retrieval)    | 0.926 |
+| MRR                  | 0.861 |
+| Answer keyword cov.  | 0.704 |
+| Grounded rate (self-verification) | 0.981 |
+| Faithfulness (independent LLM judge) | 0.778 |
 
-Without an `LLM_API_KEY` the app still runs end-to-end (extractive fallback +
-keyword grading), just without the generation/faithfulness metrics — see
-`eval/results.json` for the raw run.
+Run above is the full 54-question set with `LLM_API_KEY` set (real LLM
+grading/generation/verification, which also unlocks the faithfulness metric).
+Without a key the app still runs end-to-end on an extractive fallback + keyword
+grading — a genuine no-credentials lower bound, not a mocked number, but
+retrieval-only (no grounded rate / faithfulness).
+
+## Automated regression monitoring (n8n)
+
+`GET /eval-check` runs a fast random sample of the eval set and returns
+`pass`/`fail` against quality thresholds (`EVAL_*_THRESHOLD` in `.env`) — a
+lightweight version of the full eval, cheap enough to run on a schedule. An
+n8n workflow (`automation/n8n-eval-monitor.json`) polls it every 6 hours and
+pushes an alert (via [ntfy.sh](https://ntfy.sh), no account needed) if
+retrieval, grounding, or faithfulness regresses. See `automation/README.md`
+for the 5-minute setup.
 
 ## Deploy the live demo (free)
 
@@ -161,15 +183,22 @@ keyword grading), just without the generation/faithfulness metrics — see
 # drop any .md / .txt / .pdf files into data/, then:
 python -m scripts.build_index
 ```
-No code changes are needed to point the assistant at a new domain.
+No code changes are needed to index a new document set — retrieval works on
+anything in `data/`. If you're pointing this at a genuinely different *domain*
+(not just more PACE documents), also update the system prompt and small-talk
+guardrails in `src/agent.py` so the assistant's tone and safety rules match
+what it's actually answering questions about.
 
 ## Project layout
 
 ```
 src/            core: ingest, embeddings, vectorstore, llm, agent, pipeline
-data/           knowledge base (swappable)
-eval/           eval set + metrics runner
+data/           corpus: real CMS/state PACE PDFs (regulatory manual, stakeholder
+                 interviews, NY expansion policy discussion) — swappable
+eval/           eval set (54 questions) + metrics runner
 tests/          pytest smoke + unit tests
+scripts/        index builder, sample-audio generator
+frontend/       custom streaming chat UI served by api.py
 app.py          Streamlit UI (deploy target)
 api.py          FastAPI REST service
 mcp_server.py   MCP server (search_knowledge_base, ask)

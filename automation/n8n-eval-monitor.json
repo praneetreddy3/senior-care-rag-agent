@@ -1,0 +1,134 @@
+{
+  "name": "Senior Care RAG Agent — Eval Regression Monitor",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "name": "Every 6 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300],
+      "id": "trigger-1"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{$env.RAG_API_BASE_URL || \"http://localhost:8000\"}}/eval-check?sample_size=8",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "name": "Run Eval Health Check",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300],
+      "id": "http-1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-1",
+              "leftValue": "={{$json.pass}}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Did It Regress?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [680, 300],
+      "id": "if-1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://ntfy.sh/{{$env.NTFY_TOPIC || \"senior-care-rag-eval-alerts\"}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"title\": \"RAG eval regression detected\", \"message\": \"Failures: \" + $json.failures.join(\"; \") + \" | metrics: \" + JSON.stringify($json.metrics), \"priority\": \"high\", \"tags\": [\"warning\"] } }}",
+        "options": {}
+      },
+      "name": "Send Alert (ntfy.sh)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 200],
+      "id": "http-2"
+    },
+    {
+      "parameters": {},
+      "name": "All Good — No Alert",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [900, 400],
+      "id": "noop-1"
+    }
+  ],
+  "connections": {
+    "Every 6 Hours": {
+      "main": [
+        [
+          {
+            "node": "Run Eval Health Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Eval Health Check": {
+      "main": [
+        [
+          {
+            "node": "Did It Regress?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Did It Regress?": {
+      "main": [
+        [
+          {
+            "node": "Send Alert (ntfy.sh)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "All Good — No Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

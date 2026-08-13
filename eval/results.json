@@ -1,13 +1,13 @@
 {
   "retrieval": {
-    "hit@k": 0.95,
-    "mrr": 0.7833333333333333,
+    "hit@k": 0.9259259259259259,
+    "mrr": 0.8611111111111112,
     "k": 4
   },
   "answer": {
-    "keyword_coverage": 0.9833333333333333,
-    "grounded_rate": 1.0,
-    "faithfulness": 0.95
+    "keyword_coverage": 0.7037037037037037,
+    "grounded_rate": 0.9814814814814815,
+    "faithfulness": 0.7777777777777778
   },
-  "n": 20
+  "n": 54
 }
