@@ -1,33 +1,36 @@
-# 🩺 Senior Care RAG Agent
+# Senior Care RAG Agent
+
+**Agentic Retrieval-Augmented Generation for PACE Program Policy Q&A**
 
 ![CI](https://github.com/praneetreddy3/senior-care-rag-agent/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-An **agentic retrieval-augmented generation (RAG)** assistant that answers questions
-about the PACE program (Program of All-Inclusive Care for the Elderly) — eligibility
-and enrollment, regulatory and licensure requirements, quality assurance, participant
-rights, and how PACE interacts with Medicare and Medicaid — grounded in real CMS and
-state policy source documents. Every answer is **grounded in source documents** and
-shown with **citations**, and the agent **verifies its own answer** before returning
-it. It's a **multi-turn chatbot** with **streaming** responses, so follow-up
-questions work and answers appear as they generate.
+## Overview
 
-The knowledge base is **corpus-swappable**: retrieval, embeddings, and the vector
-store don't know anything about senior care — drop your own PDFs or markdown into
-`data/`, rebuild the index, and they'll index a new document set as-is. The one part
-that's tuned to this domain on purpose is `src/agent.py`'s system prompt and
-small-talk filter (e.g. "never give individualized medical/legal advice," topic
-keywords like "medicare"/"medicaid"), since a real deployment should have guardrails
-specific to what it's actually answering questions about. Repointing the whole app at
-a different domain means swapping the corpus **and** rewriting that prompt.
+This project implements an **agentic RAG assistant** that answers questions about
+PACE (Program of All-Inclusive Care for the Elderly) — eligibility and enrollment,
+regulatory and licensure requirements, quality assurance, participant rights, and
+how PACE interacts with Medicare and Medicaid — grounded entirely in real CMS and
+state policy source documents. Rather than a single prompt-and-generate call, the
+agent runs a **retrieve → grade → generate → verify** loop that filters irrelevant
+context before answering, cites every claim, and self-checks its own answer for
+grounding before returning it, with a corrective retry when that check fails.
 
-> ⚠️ Demo project built on real public CMS/state PACE program documents (see
-> `data/`). It is **not** medical, legal, or benefits advice.
+**Key Achievement:** 92.6% retrieval hit rate and 97.8% answer-groundedness on a
+54-question evaluation set benchmarked against the actual source PDFs, with an
+independent LLM-judge faithfulness score of 77.8%.
+
+**Technologies:** LangGraph • Sentence-Transformers / TF-IDF Embeddings • FAISS /
+ChromaDB • Groq / Anthropic Claude / OpenAI / Ollama (pluggable LLM layer) •
+FastAPI (SSE streaming) • Streamlit • MCP Server • n8n Automation
+
+> Demo project built on real public CMS/state PACE program documents (see `data/`).
+> Not medical, legal, or benefits advice.
 
 ---
 
-## Why this architecture
+## System Architecture
 
 The agent is a small **LangGraph** state machine, not a single prompt:
 
@@ -38,35 +41,50 @@ The agent is a small **LangGraph** state machine, not a single prompt:
            top-k search   drop         grounded       self-check
            (embeddings)   irrelevant   answer w/       "is every claim
                           passages     citations        supported?"
+                                                            │
+                                                    fails → widen retrieval,
+                                                             retry once
 ```
 
-- **retrieve** — semantic search over embedded document chunks.
-- **grade** — an LLM (or keyword heuristic offline) filters out retrieved passages
-  that aren't actually relevant, which reduces hallucination and noise.
+- **retrieve** — semantic search over embedded document chunks (FAISS or ChromaDB).
+- **grade** — a single batched LLM call (or keyword heuristic offline) filters out
+  retrieved passages that aren't actually relevant, reducing hallucination and noise.
 - **generate** — answers strictly from the graded context, citing sources inline.
 - **verify** — a self-check step flags answers that aren't fully grounded, surfaced
-  to the user as a ⚠️ badge.
+  to the user as a warning badge; a failed check triggers one corrective retry with
+  a widened retrieval window.
 
 One core (`src/agent.py`) is served three ways: a **FastAPI** service with a custom
-**streaming chat UI**, a **Streamlit UI**, and an **MCP server** — so it plugs into a
+streaming chat UI, a **Streamlit** UI, and an **MCP server** — so it plugs into a
 web demo, another service, or an MCP-compatible client like Claude Desktop.
 
 **Multi-turn:** follow-up questions are condensed against the conversation history
 into a standalone query before retrieval (e.g. "what about someone under 55?" →
 "Is someone under 55 eligible for PACE?").
 
+## Corpus
+
+Real public PACE source documents, ingested as PDFs via `pypdf`:
+
+| Document | Description |
+|----------|-------------|
+| `cms_pace_manual.pdf` | 191-page CMS PACE regulatory manual (chapters on licensure, IDT, QAPI, disenrollment, audits) |
+| `macpac_pace_stakeholder_interviews_2025.pdf` | 20-slide MACPAC stakeholder-interview deck on PACE quality, enrollment, and payment |
+| `ny_pace_expansion_options_2022.pdf` | 18-slide NY State Medicaid discussion of PACE expansion models and licensure law |
+
 ## Tech stack
 
-| Concern            | Choice                                                    |
-|--------------------|-----------------------------------------------------------|
-| Embeddings         | `sentence-transformers` (MiniLM) · TF-IDF offline fallback |
-| Vector store       | Pluggable: FAISS (default) · **ChromaDB** · NumPy fallback  |
-| Agent orchestration| LangGraph (`retrieve → grade → generate → verify`)         |
-| LLM                | Pluggable: **Anthropic Claude**, OpenAI, or Groq (free) — one interface |
-| Serving            | FastAPI (streaming chat UI) · Streamlit · MCP (`FastMCP`)   |
-| Chat               | Multi-turn (history-aware query condensing) + SSE streaming |
-| Evaluation         | Hit@k, MRR, keyword coverage, LLM-judge faithfulness       |
-| Tests              | pytest                                                     |
+| Concern             | Choice                                                       |
+|----------------------|---------------------------------------------------------------|
+| Embeddings           | `sentence-transformers` (MiniLM) · TF-IDF offline fallback   |
+| Vector store         | Pluggable: FAISS (default) · ChromaDB · NumPy fallback        |
+| Agent orchestration  | LangGraph (`retrieve → grade → generate → verify`)            |
+| LLM                  | Pluggable: Anthropic Claude, OpenAI, Groq, or local Ollama — one interface |
+| Serving              | FastAPI (streaming chat UI) · Streamlit · MCP (`FastMCP`)      |
+| Chat                 | Multi-turn (history-aware query condensing) + SSE streaming   |
+| Evaluation           | Hit@k, MRR, keyword coverage, grounded rate, LLM-judge faithfulness |
+| Regression monitoring| n8n workflow polling a `/eval-check` endpoint on a schedule    |
+| Tests                | pytest, isolated from live LLM calls by default                |
 
 **Runs with zero credentials.** Without an API key the agent uses an extractive
 fallback and keyword grading, so the demo always works; add a key to enable full
@@ -75,7 +93,8 @@ LLM generation, grading, and verification.
 ## Quickstart
 
 ```bash
-git clone <your-repo-url> && cd senior-care-rag-agent
+git clone https://github.com/praneetreddy3/senior-care-rag-agent.git
+cd senior-care-rag-agent
 pip install -r requirements.txt
 
 cp .env.example .env          # optional: add a free Groq key to enable the LLM
@@ -91,7 +110,7 @@ python mcp_server.py          # MCP server over stdio
 Get a free LLM key at <https://console.groq.com/keys> and put it in `.env` as
 `LLM_API_KEY`.
 
-**Switching LLM provider** is config-only (no code change). In `.env`:
+**Switching LLM provider** is config-only. In `.env`:
 
 ```ini
 # Anthropic Claude
@@ -100,7 +119,8 @@ LLM_API_KEY=sk-ant-...
 LLM_MODEL=claude-3-5-sonnet-latest
 ```
 
-The default is Groq (free). OpenAI works too — see `.env.example`.
+The default is Groq (free). OpenAI and a local Ollama endpoint work too — see
+`.env.example`.
 
 **Switching vector store** is also config-only:
 
@@ -115,8 +135,8 @@ Two independent paths:
 
 - **Browser (live mic):** the web UI uses the Web Speech API for voice input and
   reads answers aloud — no setup, works in Chrome/Edge.
-- **Server-side (optional):** an open-source **Whisper** endpoint transcribes
-  uploaded audio files, which also makes the voice path testable:
+- **Server-side (optional):** an open-source Whisper endpoint transcribes uploaded
+  audio files, which also makes the voice path testable:
 
   ```bash
   pip install -r requirements-audio.txt      # faster-whisper + gTTS
@@ -135,34 +155,42 @@ Two independent paths:
 python -m eval.run_eval --k 4 --json eval/results.json
 ```
 
-Measured on the 54-question eval set (`eval/eval_set.json`), written against the
-real CMS/state PACE documents in `data/` (a 191-page CMS regulatory manual, a
-20-slide MACPAC stakeholder-interview deck, and an 18-slide NY State Medicaid
-policy discussion):
+Full 54-question eval set (`eval/eval_set.json`), written against the real CMS/state
+PACE documents above, run with an LLM provider enabled (grading, generation, and
+self-verification all live, plus an independent LLM-judge faithfulness check):
 
-| Metric               | Score (LLM-enabled) |
-|----------------------|-------|
-| Hit@4 (retrieval)    | 0.926 |
-| MRR                  | 0.861 |
-| Answer keyword cov.  | 0.704 |
-| Grounded rate (self-verification) | 0.981 |
-| Faithfulness (independent LLM judge) | 0.778 |
+| Metric                                 | Score |
+|-----------------------------------------|-------|
+| Hit@4 (retrieval)                       | 0.926 |
+| MRR                                     | 0.861 |
+| Answer keyword coverage                 | 0.704 |
+| Grounded rate (agent self-verification) | 0.981 |
+| Faithfulness (independent LLM judge)    | 0.778 |
 
-Run above is the full 54-question set with `LLM_API_KEY` set (real LLM
-grading/generation/verification, which also unlocks the faithfulness metric).
-Without a key the app still runs end-to-end on an extractive fallback + keyword
-grading — a genuine no-credentials lower bound, not a mocked number, but
-retrieval-only (no grounded rate / faithfulness).
+Without an LLM key the app still runs end-to-end on an extractive fallback and
+keyword grading — a genuine no-credentials lower bound on retrieval quality, but
+without the grounded-rate or faithfulness metrics, which need an LLM judge.
 
 ## Automated regression monitoring (n8n)
 
-`GET /eval-check` runs a fast random sample of the eval set and returns
-`pass`/`fail` against quality thresholds (`EVAL_*_THRESHOLD` in `.env`) — a
-lightweight version of the full eval, cheap enough to run on a schedule. An
-n8n workflow (`automation/n8n-eval-monitor.json`) polls it every 6 hours and
-pushes an alert (via [ntfy.sh](https://ntfy.sh), no account needed) if
-retrieval, grounding, or faithfulness regresses. See `automation/README.md`
-for the 5-minute setup.
+`GET /eval-check` runs a fast random sample of the eval set and returns pass/fail
+against configurable quality thresholds (`EVAL_*_THRESHOLD` in `.env`) — a
+lightweight version of the full eval, cheap enough to run on a schedule instead of
+by hand.
+
+An n8n workflow (`automation/n8n-eval-monitor.json`) polls that endpoint every 6
+hours and pushes a push notification via [ntfy.sh](https://ntfy.sh) (no account
+needed) when retrieval, grounding, or faithfulness regresses below threshold:
+
+```
+Schedule (6h) → GET /eval-check → pass? ──no──→ push alert with failure detail
+                                    │
+                                   yes → no-op
+```
+
+Both branches were tested live end to end — including deliberately forcing a
+threshold failure and confirming the push notification fires with the specific
+metric that regressed. See `automation/README.md` for setup.
 
 ## Deploy the live demo (free)
 
@@ -177,25 +205,14 @@ for the 5-minute setup.
    ```
 4. Deploy — you get a public URL to put on your resume.
 
-## Use your own documents
-
-```bash
-# drop any .md / .txt / .pdf files into data/, then:
-python -m scripts.build_index
-```
-No code changes are needed to index a new document set — retrieval works on
-anything in `data/`. If you're pointing this at a genuinely different *domain*
-(not just more PACE documents), also update the system prompt and small-talk
-guardrails in `src/agent.py` so the assistant's tone and safety rules match
-what it's actually answering questions about.
-
 ## Project layout
 
 ```
 src/            core: ingest, embeddings, vectorstore, llm, agent, pipeline
 data/           corpus: real CMS/state PACE PDFs (regulatory manual, stakeholder
-                 interviews, NY expansion policy discussion) — swappable
-eval/           eval set (54 questions) + metrics runner
+                interviews, NY expansion policy discussion)
+eval/           eval set (54 questions), metrics runner, fast regression checker
+automation/     n8n workflow definition + setup guide
 tests/          pytest smoke + unit tests
 scripts/        index builder, sample-audio generator
 frontend/       custom streaming chat UI served by api.py
@@ -229,7 +246,8 @@ matter as much as the features in healthcare:
   mandatory citations reduce hallucination; the assistant declines individualized
   medical/legal advice and defers to a clinician. Clinical decisions stay with people.
 - **Safety evaluation before release.** Gate deploys on the faithfulness/grounded
-  metrics in `eval/`, and monitor them continuously in production.
+  metrics in `eval/`, and monitor them continuously in production via the `/eval-check`
+  regression endpoint.
 - **Network isolation.** Private endpoints/VPC, no public egress from the data plane.
 
 ## License

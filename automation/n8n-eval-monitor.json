@@ -15,22 +15,27 @@
       "name": "Every 6 Hours",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
-      "position": [240, 300],
-      "id": "trigger-1"
+      "position": [
+        -656,
+        112
+      ],
+      "id": "871eac33-9de8-4164-81fd-0fc176a2ea8f"
     },
     {
       "parameters": {
-        "method": "GET",
-        "url": "={{$env.RAG_API_BASE_URL || \"http://localhost:8000\"}}/eval-check?sample_size=8",
+        "url": "=http://127.0.0.1:8000/eval-check?sample_size=2",
         "options": {
-          "timeout": 120000
+          "timeout": 300000
         }
       },
       "name": "Run Eval Health Check",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [460, 300],
-      "id": "http-1"
+      "position": [
+        -448,
+        112
+      ],
+      "id": "56a614c0-ea8c-4c28-b1c0-fd11f4373420"
     },
     {
       "parameters": {
@@ -38,7 +43,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "strict",
+            "version": 1
           },
           "conditions": [
             {
@@ -58,13 +64,16 @@
       "name": "Did It Regress?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [680, 300],
-      "id": "if-1"
+      "position": [
+        -224,
+        112
+      ],
+      "id": "38f7fa2d-fbff-4d23-b299-72207e66f4cb"
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://ntfy.sh/{{$env.NTFY_TOPIC || \"senior-care-rag-eval-alerts\"}}",
+        "url": "=https://ntfy.sh/senior-care-rag-eval-alerts",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ { \"title\": \"RAG eval regression detected\", \"message\": \"Failures: \" + $json.failures.join(\"; \") + \" | metrics: \" + JSON.stringify($json.metrics), \"priority\": \"high\", \"tags\": [\"warning\"] } }}",
@@ -73,18 +82,25 @@
       "name": "Send Alert (ntfy.sh)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [900, 200],
-      "id": "http-2"
+      "position": [
+        0,
+        0
+      ],
+      "id": "e9ccf569-6046-438f-a593-987ebd9f2164"
     },
     {
       "parameters": {},
       "name": "All Good — No Alert",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
-      "position": [900, 400],
-      "id": "noop-1"
+      "position": [
+        0,
+        208
+      ],
+      "id": "ad0750c7-b408-4ebd-b986-f73486cd9e57"
     }
   ],
+  "pinData": {},
   "connections": {
     "Every 6 Hours": {
       "main": [
@@ -129,6 +145,15 @@
   },
   "active": false,
   "settings": {
-    "executionOrder": "v1"
-  }
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "5f93e3d5-a8fd-429e-ba62-646ecfbb680b",
+  "meta": {
+    "instanceId": "7b389670005a2697b5769525fed44301b1baf86a75fe745861355946ab327537"
+  },
+  "nodeGroups": [],
+  "id": "waKv2jjWRHUDPBTJ",
+  "tags": []
 }

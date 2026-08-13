@@ -147,6 +147,21 @@
   faithfulness 0.778. README eval table updated with these real numbers,
   replacing the earlier TF-IDF-only baseline.
 
+## [0.5.4]
+### Changed
+- Live-tested the n8n regression-monitor workflow end to end, both branches:
+  the pass path (routes to "All Good — No Alert") and the failure path
+  (deliberately tripped `EVAL_HIT_RATE_THRESHOLD=1.5` and confirmed a real
+  ntfy.sh push notification with the specific failing metric). Fixed two
+  real issues found only by running it live: n8n/Node.js resolves
+  `localhost` to IPv6 first and fails against a server only bound to IPv4
+  (fixed by using `127.0.0.1` instead), and the default 120s HTTP timeout
+  wasn't enough for CPU-bound local-LLM inference (raised to 300s). Replaced
+  `automation/n8n-eval-monitor.json` with the actual working export.
+- README: full rewrite to match the format used across the rest of the
+  portfolio (Overview / Key Achievement / Technologies lead, architecture
+  diagram, results table, no self-referential "domain swappable" framing).
+
 ## Roadmap
 - [ ] Request tracing + token/cost logging (observability).
 - [ ] Swap demo corpus for a larger real dataset and re-benchmark.
