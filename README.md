@@ -129,6 +129,16 @@ VECTOR_BACKEND=chroma   # default is "faiss"
 ```
 Then rebuild the index (`python -m scripts.build_index`).
 
+**Switching embedding backend** is also config-only:
+
+```ini
+EMBEDDING_BACKEND=tfidf   # default is "st" (sentence-transformers)
+```
+`tfidf` is pure Python with no model download and a much smaller memory
+footprint than `sentence-transformers`/`torch` — useful on memory-constrained
+hosts, or if you'd rather not download an embedding model at all. Trades some
+retrieval quality for that.
+
 ## Voice & audio
 
 Two independent paths:
@@ -191,19 +201,6 @@ Schedule (6h) → GET /eval-check → pass? ──no──→ push alert with fa
 Both branches were tested live end to end — including deliberately forcing a
 threshold failure and confirming the push notification fires with the specific
 metric that regressed. See `automation/README.md` for setup.
-
-## Deploy the live demo (free)
-
-**Streamlit Community Cloud:**
-1. Push this repo to GitHub.
-2. Go to <https://share.streamlit.io> → New app → pick the repo → entrypoint `app.py`.
-3. In **Advanced settings → Secrets**, add:
-   ```toml
-   LLM_API_KEY = "your_groq_key"
-   LLM_BASE_URL = "https://api.groq.com/openai/v1"
-   LLM_MODEL = "llama-3.3-70b-versatile"
-   ```
-4. Deploy — you get a public URL to put on your resume.
 
 ## Project layout
 
