@@ -37,7 +37,7 @@ class Settings:
         default_factory=lambda: os.getenv("LLM_BASE_URL", "https://api.groq.com/openai/v1")
     )
     llm_model: str = field(
-        default_factory=lambda: os.getenv("LLM_MODEL", "llama-3.3-70b-versatile")
+        default_factory=lambda: os.getenv("LLM_MODEL", "openai/gpt-oss-20b")
     )
     llm_max_tokens: int = field(default_factory=lambda: _int("LLM_MAX_TOKENS", 1024))
 

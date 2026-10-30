@@ -125,7 +125,8 @@ LLM_API_KEY=sk-ant-...
 LLM_MODEL=claude-3-5-sonnet-latest
 ```
 
-The default is Groq (free). OpenAI and a local Ollama endpoint work too — see
+The default is Groq (free) with `openai/gpt-oss-20b`. The 54-question evaluation
+below was run locally with Llama 3.1 8B through Ollama. OpenAI and Ollama work too — see
 `.env.example`.
 
 **Switching vector store** is also config-only:
