@@ -1,7 +1,7 @@
 """Streamlit UI — the live, deployable demo.
 
-Deployed on Hugging Face Spaces (Docker SDK, port 7860) with LLM_API_KEY stored as
-a Space secret. Works without a key too (extractive fallback).
+Deployed on Streamlit Community Cloud with LLM_API_KEY stored in the app's Secrets.
+Works without a key too (extractive fallback).
 """
 from __future__ import annotations
 

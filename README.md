@@ -1,15 +1,3 @@
----
-title: Senior Care RAG Agent
-emoji: 🩺
-colorFrom: blue
-colorTo: gray
-sdk: docker
-app_port: 7860
-pinned: false
-license: mit
-short_description: Agentic RAG over CMS and state PACE policy documents
----
-
 # Senior Care RAG Agent
 
 **Agentic Retrieval-Augmented Generation for PACE Program Policy Q&A**
@@ -39,7 +27,7 @@ FastAPI (SSE streaming) • Streamlit • MCP Server • n8n Automation
 
 ## Try it
 
-**Live demo:** _SPACE_URL_ (Hugging Face Spaces, free CPU tier — first load after idle takes ~1 min)
+**Live demo:** _APP_URL_ (Streamlit Community Cloud — if the app has been idle, click "wake up" and give it a minute)
 
 Ask something like *"Who is eligible for PACE?"* — every answer cites the source PDF it came from.
 
@@ -157,15 +145,16 @@ footprint than `sentence-transformers`/`torch` — useful on memory-constrained
 hosts, or if you'd rather not download an embedding model at all. Trades some
 retrieval quality for that.
 
-## Deployment (Hugging Face Spaces)
+## Deployment
 
-The live demo runs from the `Dockerfile` on a Hugging Face Space (Docker SDK):
+The live demo runs on **Streamlit Community Cloud**, deployed straight from this repo:
 
-- The YAML block at the top of this README tells Spaces to build the Dockerfile and route traffic to port **7860**.
-- The vector index is built **inside the image** at build time, so the app starts without re-embedding.
-- `LLM_API_KEY` is stored as a **Space secret** (never committed). Without it the app falls back to extractive answers.
-- The image runs Streamlit by default. To run the FastAPI service from the same image:
-  `docker run -p 8000:8000 senior-care-rag-agent uvicorn api:app --host 0.0.0.0 --port 8000`
+- Entry point is `app.py`; dependencies come from `requirements.txt` (CPU-only torch to keep the install small).
+- On first start the app embeds the PDFs in `data/` and caches the index, so no build artifacts are committed.
+- `LLM_API_KEY` is stored in the app's **Secrets** (never committed). Without it the app falls back to extractive answers.
+
+To self-host instead, the `Dockerfile` builds the index into the image and serves Streamlit on port 8501
+(or the FastAPI service: `docker run -p 8000:8000 senior-care-rag-agent uvicorn api:app --host 0.0.0.0 --port 8000`).
 
 ## Voice & audio
 
