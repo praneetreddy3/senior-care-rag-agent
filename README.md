@@ -27,7 +27,7 @@ FastAPI (SSE streaming) • Streamlit • MCP Server • n8n Automation
 
 ## Try it
 
-**Live demo:** _APP_URL_ (Streamlit Community Cloud — if the app has been idle, click "wake up" and give it a minute)
+**Live demo:** <https://senior-care-rag-agent.streamlit.app/> (Streamlit Community Cloud — if the app has been idle, click "wake up" and give it a minute)
 
 Ask something like *"Who is eligible for PACE?"* — every answer cites the source PDF it came from.
 
