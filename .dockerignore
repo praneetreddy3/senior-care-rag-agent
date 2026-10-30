@@ -1,0 +1,13 @@
+# Keep secrets, local builds and dev clutter out of the image
+.env
+.git
+storage/
+_to_delete/
+.pytest_cache/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.vscode/
+tests/audio/*.mp3
+tools/

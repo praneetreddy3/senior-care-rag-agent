@@ -1,8 +1,7 @@
 """Streamlit UI — the live, deployable demo.
 
-Deploy free on Streamlit Community Cloud: point it at this repo, set app.py as the
-entrypoint, and add LLM_API_KEY in the app's Secrets. Works without a key too
-(extractive fallback).
+Deployed on Hugging Face Spaces (Docker SDK, port 7860) with LLM_API_KEY stored as
+a Space secret. Works without a key too (extractive fallback).
 """
 from __future__ import annotations
 

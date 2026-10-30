@@ -1,3 +1,15 @@
+---
+title: Senior Care RAG Agent
+emoji: 🩺
+colorFrom: blue
+colorTo: gray
+sdk: docker
+app_port: 7860
+pinned: false
+license: mit
+short_description: Agentic RAG over CMS and state PACE policy documents
+---
+
 # Senior Care RAG Agent
 
 **Agentic Retrieval-Augmented Generation for PACE Program Policy Q&A**
@@ -24,6 +36,12 @@ independent LLM-judge faithfulness score of 77.8%.
 **Technologies:** LangGraph • Sentence-Transformers / TF-IDF Embeddings • FAISS /
 ChromaDB • Groq / Anthropic Claude / OpenAI / Ollama (pluggable LLM layer) •
 FastAPI (SSE streaming) • Streamlit • MCP Server • n8n Automation
+
+## Try it
+
+**Live demo:** _SPACE_URL_ (Hugging Face Spaces, free CPU tier — first load after idle takes ~1 min)
+
+Ask something like *"Who is eligible for PACE?"* — every answer cites the source PDF it came from.
 
 > Demo project built on real public CMS/state PACE program documents (see `data/`).
 > Not medical, legal, or benefits advice.
@@ -138,6 +156,16 @@ EMBEDDING_BACKEND=tfidf   # default is "st" (sentence-transformers)
 footprint than `sentence-transformers`/`torch` — useful on memory-constrained
 hosts, or if you'd rather not download an embedding model at all. Trades some
 retrieval quality for that.
+
+## Deployment (Hugging Face Spaces)
+
+The live demo runs from the `Dockerfile` on a Hugging Face Space (Docker SDK):
+
+- The YAML block at the top of this README tells Spaces to build the Dockerfile and route traffic to port **7860**.
+- The vector index is built **inside the image** at build time, so the app starts without re-embedding.
+- `LLM_API_KEY` is stored as a **Space secret** (never committed). Without it the app falls back to extractive answers.
+- The image runs Streamlit by default. To run the FastAPI service from the same image:
+  `docker run -p 8000:8000 senior-care-rag-agent uvicorn api:app --host 0.0.0.0 --port 8000`
 
 ## Voice & audio
 

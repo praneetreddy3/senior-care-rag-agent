@@ -24,3 +24,6 @@ tools/setup_git_history.sh
 .DS_Store
 .idea/
 .vscode/
+
+# Files parked for manual deletion
+_to_delete/
